@@ -25,6 +25,10 @@ struct grid {
         yPos = y*tileSize;
         return {x*tileSize, y*tileSize};
     }
+    void gridPos(const std::vector<int> &movement) {
+        xPos += tileSize*movement[0];
+        yPos += tileSize*movement[1];
+    }
     std::vector<int> gridPos() {
         return {xPos, yPos};
     }

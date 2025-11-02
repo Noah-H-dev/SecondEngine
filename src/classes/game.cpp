@@ -11,15 +11,22 @@
 #include "game.h"
 
 #include "renderer.h"
-#include "glm/vec2.hpp"
+
 
 
 game::game(int tile, int scrWidth, int scrHeight):gameSpace(scrWidth,scrHeight,tile){
     init();
-    int size = staticObjectDataMap.size();
-    staticGameObjects.reserve(size+10);
     idParser();
+    enemies.emplace_back(this->gameSpace, "../src/shaders/static.vs", "../src/shaders/static.fs", "../src/textures/enemy.png", 15, 15);
     readMap("../src/maps/default.txt");
+}
+
+void game::close() {
+    for (auto& c: staticGameObjects) {
+        glDeleteVertexArrays(1, &c.VAO);
+        glDeleteBuffers(1, &c.VBO);
+        glDeleteTextures(1, &c.textureID);
+    }
 }
 
 void game::init() { std::ifstream inputFile("../src/ID.txt");
@@ -93,8 +100,17 @@ void game::idParser() {
 
 void game::update(int key, int action) {
     if (ready == true){
-        lastPos= Player->world.gridPos();
+        lastPos = Player->world.gridPos();
         Player->move(key,action);
+        int mapPos = currentMap[Player->world.gridY()][Player->world.gridX()];
+        if (mapPos == 1 || mapPos == -1){
+            Player->world.xPos = lastPos[0];
+            Player->world.yPos = lastPos[1];
+        }
+        for (enemy &e: enemies) {
+
+            e.move(Player->world.gridX(), Player->world.gridY(),currentMap);
+        }
         ready = false;
     }
     else if (ready == false && action == GLFW_RELEASE) {
@@ -107,12 +123,11 @@ void game::render() {
         case gameState::IN_GAME:{
             renderer::renderGame(currentMap,staticGameObjects);
 
-            int mapPos = currentMap[Player->world.gridY()][Player->world.gridX()];
-            if (mapPos == 1 || mapPos == -1){
-                Player->world.xPos = lastPos[0];
-                Player->world.yPos = lastPos[1];
-            }
+
             Player->draw();
+            for (enemy &e: enemies) {
+                e.draw();
+            }
         }
             break;
         default: break;

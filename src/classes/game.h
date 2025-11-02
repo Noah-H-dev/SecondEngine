@@ -13,6 +13,8 @@
 #include "player.h"
 
 #include "staticObject.h"
+#include "glad/glad.h"
+#include "enemy.h"
 
 
 struct objectData {
@@ -30,13 +32,13 @@ enum gameState {
     MAP_EDITOR,
     IN_GAME
 };
-
 class game {
     bool ready = true;
     std::vector<int> lastPos;
 public:
     game(int tile, int scrWidth, int scrHeight);
     ~game() = default;
+    void close();
     void init();
     void readMap(const std::string& mapPath);
     void idParser();
@@ -48,6 +50,7 @@ public:
     gameState currentState = gameState::IN_GAME;
     std::map<int, objectData> staticObjectDataMap;
     std::vector<staticObject> staticGameObjects;
+    std::vector<enemy> enemies;
     std::vector<std::vector<int>> currentMap;
 
 };

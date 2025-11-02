@@ -59,7 +59,7 @@ int main()
     }
 
 
-
+    Game.close();
     glfwTerminate();
     return 0;
 }

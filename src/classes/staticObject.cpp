@@ -14,8 +14,7 @@
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
 
-staticObject::staticObject(grid gameSpace, const std::string &vsPath, const std::string &fsPath, const std::string &texPath) : world(gameSpace) {
-    Shader = new shader(vsPath.c_str(), fsPath.c_str());
+staticObject::staticObject(grid gameSpace, const std::string &vsPath, const std::string &fsPath, const std::string &texPath) : world(gameSpace),Shader(vsPath.c_str(), fsPath.c_str()) {
     glGenVertexArrays(1, &this->VAO);
     glGenBuffers(1, &this->VBO);
 
@@ -53,8 +52,8 @@ staticObject::staticObject(grid gameSpace, const std::string &vsPath, const std:
         std::cout << "Failed to load texture" << std::endl;
     }
     stbi_image_free(data);
-    this->Shader->use();
-    this->Shader->setInt("tex", 0);  // link sampler uniform to GL_TEXTURE0
+    this->Shader.use();
+    this->Shader.setInt("tex", 0);  // link sampler uniform to GL_TEXTURE0
 
     glBindTexture(GL_TEXTURE_2D, 0);       // Also unbind texture for cleanliness
     glBindBuffer(GL_ARRAY_BUFFER, 0);      // Unbind VBO - safe to do before VAO
@@ -62,16 +61,15 @@ staticObject::staticObject(grid gameSpace, const std::string &vsPath, const std:
 }
 
 staticObject::~staticObject() {
-    glDeleteVertexArrays(1, &this->VAO);
-    glDeleteBuffers(1, &this->VBO);
-    glDeleteTextures(1, &this->textureID);
-    delete Shader;
+    // glDeleteVertexArrays(1, &this->VAO);
+    // glDeleteBuffers(1, &this->VBO);
+    // glDeleteTextures(1, &this->textureID);
 }
 
 void staticObject::draw(int x, int y) {
     world.gridPos(x, y);
 
-    this->Shader->use();
+    this->Shader.use();
 
     glm::mat4 projection = glm::ortho(0.0f, (float)world.totalWidth, 0.0f, (float)world.totalHeight, -1.0f, 1.0f);
 
@@ -80,8 +78,8 @@ void staticObject::draw(int x, int y) {
     model = glm::scale(model, glm::vec3((float) world.tileSize,(float) world.tileSize, 1.0f));
 
 
-    this->Shader->setMat4("projection", projection);
-    this->Shader->setMat4("model", model);
+    this->Shader.setMat4("projection", projection);
+    this->Shader.setMat4("model", model);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, this->textureID);

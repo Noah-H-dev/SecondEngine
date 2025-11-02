@@ -8,7 +8,7 @@
 
 #include "gameObject.h"
 #include "grid.h"
-
+#include  "shader.h"
 
 class player : public gameObject {
 public:
@@ -21,7 +21,7 @@ public:
 
     unsigned int VAO, VBO, textureID;
 
-    shader* Shader;
+    shader Shader;
     grid world;
     std::vector<float> container = { // pivot bottom left
         1.0f, 0.0f, 0.0f,      1.0f, 0.0f,

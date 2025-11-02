@@ -1,9 +1,9 @@
 //
-// Created by griff on 10/23/2025.
+// Created by griff on 11/2/2025.
 //
 
-#ifndef OPENGLCLION_STATICOBJECT_H
-#define OPENGLCLION_STATICOBJECT_H
+#ifndef OPENGLCLION_ENEMY_H
+#define OPENGLCLION_ENEMY_H
 #include <string>
 #include <vector>
 
@@ -11,14 +11,21 @@
 #include "grid.h"
 #include "shader.h"
 
-class staticObject final : public gameObject{
+
+class player;
+
+class enemy: public gameObject {
 public:
-    staticObject(const grid gameSpace, const std::string &vsPath, const std::string &fsPath, const std::string &texPath);
-    ~staticObject() override;
+
+    enemy(const grid gameSpace, const std::string &vsPath, const std::string &fsPath, const std::string &texPath, int x , int y);
+    ~enemy() override;
     void draw(int x, int y) override;
+    void draw();
+    void move(int x, int y, std::vector<std::vector<int>> currentMap);
+
+
 
     unsigned int VAO, VBO, textureID;
-
     shader Shader;
     grid world;
     std::vector<float> container = { // pivot bottom left
@@ -32,4 +39,4 @@ public:
 };
 
 
-#endif //OPENGLCLION_STATICOBJECT_H
+#endif //OPENGLCLION_ENEMY_H

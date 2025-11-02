@@ -1,30 +1,121 @@
 //
-// Created by griff on 10/23/2025.
+// Created by griff on 11/2/2025.
 //
+
+#include "enemy.h"
+
+#include <algorithm>
+#include <iostream>
+#include <map>
+#include <queue>
+#include <set>
 
 #include "player.h"
-//
-// Created by griff on 10/23/2025.
-//
-
-#include "staticObject.h"
-
-#include <iostream>
-
 #include "stb_image.h"
-#include "grid.h"
-#include "shader.h"
 #include "glad/glad.h"
-#include "GLFW/glfw3.h"
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
+std::vector<std::vector<int>> bfs(int xTar, int yTar, int xStart, int yStart, std::vector<std::vector<int>> &currentMap) {
+    std::vector<std::vector<int>> path;
 
-player::player(grid gameSpace, const std::string &vsPath, const std::string &fsPath, const std::string &texPath, int x, int y) :
+    // Get map dimensions correctly
+    int height = currentMap.size();
+    int width = (height > 0) ? currentMap[yTar].size() : 0;
+
+    // Check if start or target is invalid
+    if (xStart < 0 || yStart < 0 || yStart >= height || xStart >= width ||
+        xTar < 0 || yTar < 0 || yTar >= height || xTar >= width ||
+        currentMap[yStart][xStart] != 0 || currentMap[yTar][xTar] != 0) {
+        return path; // Return empty path
+    }
+
+    // BFS setup
+    std::queue<std::pair<int, int>> q;
+    std::map<std::pair<int, int>, std::pair<int, int>> parent;
+    std::set<std::pair<int, int>> visited;
+
+    q.push({xStart, yStart});
+    visited.insert({xStart, yStart});
+    parent[{xStart, yStart}] = {-1, -1};
+
+    // Directions: up, down, left, right
+    int dx[] = {0, 0, -1, 1};
+    int dy[] = {-1, 1, 0, 0};
+
+    bool found = false;
+
+    while (!q.empty() && !found) {
+        auto [x, y] = q.front();
+        q.pop();
+
+        if (x == xTar && y == yTar) {
+            found = true;
+            break;
+        }
+
+        // Check all 4 neighbors
+        for (int i = 0; i < 4; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+
+            // Check if neighbor is valid and not visited
+            if (nx >= 0 && nx < width &&
+                ny >= 0 && ny < height &&
+                currentMap[ny][nx] == 0 &&
+                visited.find({nx, ny}) == visited.end()) {
+
+                q.push({nx, ny});
+                visited.insert({nx, ny});
+                parent[{nx, ny}] = {x, y};
+            }
+        }
+    }
+
+    // Reconstruct path if target was found
+    if (found) {
+        std::pair<int, int> current = {xTar, yTar};
+        while (current.first != -1) {
+            path.push_back({current.first, current.second});
+            current = parent[current];
+        }
+        std::reverse(path.begin(), path.end());
+    }
+
+    return path;
+}
+
+std::vector<int> hunt(int x, int y, enemy* self, std::vector<std::vector<int>> &currentMap) {
+
+    std::vector<std::vector<int>> path = bfs(x,y,self->world.gridX(),self->world.gridY(),currentMap);
+    if (path.size() == 1) {
+        return path[0];
+    }
+    std::cout << path.size() << std::endl;
+    std::vector<int> step = {path[1][0] - path[0][0],path[1][1] - path[0][1]};
+    if (abs(step[0]) > abs(step[1])) {
+        step = {step[0],0};
+    }
+    else {
+        step = {0,step[1]};
+    }
+    step[0] = (step[0] == 0)? 0: step[0]/abs(step[0]) ;
+    step[1] = (step[1] == 0)? 0: step[1]/abs(step[1]) ;
+
+    self->world.gridPos(step);
+    return step;
+}
+
+
+
+
+
+
+enemy::enemy(grid gameSpace, const std::string &vsPath, const std::string &fsPath, const std::string &texPath, int x, int y) :
 world(gameSpace),
 Shader(vsPath.c_str(), fsPath.c_str()) {
 
-
     world.gridPos(x,y);
+    
     glGenVertexArrays(1, &this->VAO);
     glGenBuffers(1, &this->VBO);
 
@@ -70,13 +161,13 @@ Shader(vsPath.c_str(), fsPath.c_str()) {
     glBindVertexArray(0);
 }
 
-player::~player() {
+enemy::~enemy() {
     glDeleteVertexArrays(1, &this->VAO);
     glDeleteBuffers(1, &this->VBO);
     glDeleteTextures(1, &this->textureID);
 }
 
-void player::draw(int x, int y) {
+void enemy::draw(int x, int y) {
     world.gridPos(x, y);
 
     this->Shader.use();
@@ -100,7 +191,7 @@ void player::draw(int x, int y) {
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
 }
-void player::draw() {
+void enemy::draw() {
     this->Shader.use();
 
     glm::mat4 projection = glm::ortho(0.0f, (float)world.totalWidth, 0.0f, (float)world.totalHeight, -1.0f, 1.0f);
@@ -123,17 +214,7 @@ void player::draw() {
 
 }
 
-void player::move(int key, int action) {
-    if (key == GLFW_KEY_W && action == GLFW_PRESS) {
-        this->world.yPos += world.tileSize;
-    }
-    if (key == GLFW_KEY_S && action == GLFW_PRESS) {
-        this->world.yPos -= world.tileSize;
-    }
-    if (key == GLFW_KEY_A && action == GLFW_PRESS) {
-        this->world.xPos -= world.tileSize;
-    }
-    if (key == GLFW_KEY_D && action == GLFW_PRESS) {
-        this->world.xPos += world.tileSize;
-    }
+void enemy::move(int x, int y, std::vector<std::vector<int>> currentMap) {
+    std::vector<int> movement = hunt(x, y, this, currentMap);
+
 }
