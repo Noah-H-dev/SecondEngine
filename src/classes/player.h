@@ -6,15 +6,14 @@
 #define OPENGLCLION_PLAYER_H
 #include <string>
 
-#include "gameObject.h"
 #include "grid.h"
-#include  "shader.h"
+#include "shader.h"
 
-class player : public gameObject {
+class player {
 public:
     player(const grid gameSpace, const std::string &vsPath, const std::string &fsPath, const std::string &texPath, int x , int y);
-    ~player() override;
-    void draw(int x, int y) override;
+    ~player();
+    void draw(int x, int y);
     void draw();
     void move(int key, int action);
 

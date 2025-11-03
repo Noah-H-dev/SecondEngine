@@ -7,15 +7,14 @@
 #include <string>
 #include <vector>
 
-#include "gameObject.h"
 #include "grid.h"
 #include "shader.h"
 
-class staticObject final : public gameObject{
+class staticObject {
 public:
     staticObject(const grid gameSpace, const std::string &vsPath, const std::string &fsPath, const std::string &texPath);
-    ~staticObject() override;
-    void draw(int x, int y) override;
+    ~staticObject();
+    void draw(int x, int y);
 
     unsigned int VAO, VBO, textureID;
 

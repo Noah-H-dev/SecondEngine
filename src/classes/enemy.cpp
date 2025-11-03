@@ -90,7 +90,6 @@ std::vector<int> hunt(int x, int y, enemy* self, std::vector<std::vector<int>> &
     if (path.size() == 1) {
         return path[0];
     }
-    std::cout << path.size() << std::endl;
     std::vector<int> step = {path[1][0] - path[0][0],path[1][1] - path[0][1]};
     if (abs(step[0]) > abs(step[1])) {
         step = {step[0],0};

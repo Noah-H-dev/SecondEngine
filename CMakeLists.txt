@@ -12,7 +12,6 @@ add_executable(OpenGLClion src/main.cpp
         src/classes/game.cpp
         src/classes/game.h
         src/classes/grid.h
-        src/classes/gameObject.h
         src/classes/player.cpp
         src/classes/player.h
         src/classes/staticObject.cpp

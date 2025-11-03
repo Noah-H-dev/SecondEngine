@@ -7,19 +7,18 @@
 #include <string>
 #include <vector>
 
-#include "gameObject.h"
 #include "grid.h"
 #include "shader.h"
 
 
 class player;
 
-class enemy: public gameObject {
+class enemy {
 public:
 
     enemy(const grid gameSpace, const std::string &vsPath, const std::string &fsPath, const std::string &texPath, int x , int y);
-    ~enemy() override;
-    void draw(int x, int y) override;
+    ~enemy();
+    void draw(int x, int y);
     void draw();
     void move(int x, int y, std::vector<std::vector<int>> currentMap);
 
