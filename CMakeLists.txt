@@ -16,12 +16,11 @@ add_executable(OpenGLClion src/main.cpp
         src/classes/player.h
         src/classes/staticObject.cpp
         src/classes/staticObject.h
-        src/classes/dynamicObject.cpp
-        src/classes/dynamicObject.h
         src/classes/renderer.cpp
         src/classes/renderer.h
         src/classes/enemy.cpp
-        src/classes/enemy.h)
+        src/classes/enemy.h
+        src/classes/attributes.h)
 
 # Include directories
 target_include_directories(OpenGLClion PRIVATE "${CMAKE_SOURCE_DIR}/dependencies/include")

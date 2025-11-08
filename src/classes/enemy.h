@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "grid.h"
+#include "attributes.h"
 #include "shader.h"
 
 
@@ -27,6 +28,7 @@ public:
     unsigned int VAO, VBO, textureID;
     shader Shader;
     grid world;
+    attributes enemyAttrib;
     std::vector<float> container = { // pivot bottom left
         1.0f, 0.0f, 0.0f,      1.0f, 0.0f,
         1.0f, 1.0f, 0.0f,      1.0f, 1.0f,

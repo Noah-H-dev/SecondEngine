@@ -35,12 +35,18 @@ struct grid {
     int gridPos(const int loc) const {
         return loc*tileSize;
     }
-    int gridX() {
+    /*
+     *returns the pure x value unscaled by the tilesize
+     */
+    int gridX() const {
         return xPos/tileSize;
-    };
-    int gridY() {
+    }
+    /*
+     *returns the pure x value unscaled by the tilesize
+     */
+    int gridY() const {
         return yPos/tileSize;
-    };
+    }
 };
 
 

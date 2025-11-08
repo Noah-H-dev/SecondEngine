@@ -21,8 +21,8 @@
 
 player::player(grid gameSpace, const std::string &vsPath, const std::string &fsPath, const std::string &texPath, int x, int y) :
 world(gameSpace),
-Shader(vsPath.c_str(), fsPath.c_str()) {
-
+Shader(vsPath.c_str(), fsPath.c_str()),
+playerAttrib(10){
 
     world.gridPos(x,y);
     glGenVertexArrays(1, &this->VAO);

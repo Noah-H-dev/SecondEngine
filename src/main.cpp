@@ -36,7 +36,7 @@ int main()
 
     GLFW_INITIALIZE;
     stbi_set_flip_vertically_on_load(1);
-    GLFW_WINDOW_INITIALIZE
+    GLFW_WINDOW_INITIALIZE;
     glfwSetKeyCallback(window, key_callback);
 
     game Game(tile,screenWidth,screenHeight);
@@ -46,9 +46,7 @@ int main()
 
     // render loop
     // -----------
-    while (!glfwWindowShouldClose(window))
-    {
-
+    while (!glfwWindowShouldClose(window)){
 
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -56,6 +54,7 @@ int main()
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+
     }
 
 
