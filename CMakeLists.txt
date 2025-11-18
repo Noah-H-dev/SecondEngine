@@ -28,7 +28,8 @@ target_include_directories(OpenGLClion PRIVATE "${CMAKE_SOURCE_DIR}/dependencies
 # Link libraries statically
 target_link_libraries(OpenGLClion
         glad
-        "${CMAKE_SOURCE_DIR}/dependencies/dlls/libglfw3.a"  # Use .a not .lib
+        "${CMAKE_SOURCE_DIR}/dependencies/dlls/libglfw3.a"
+        "${CMAKE_SOURCE_DIR}/dependencies/dlls/libfreetype.dll.a"
         opengl32
         gdi32
         user32
@@ -37,3 +38,7 @@ target_link_libraries(OpenGLClion
         -static-libstdc++
         -static
 )
+add_custom_command(TARGET OpenGLClion POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/dependencies/dlls/freetype.dll"
+        $<TARGET_FILE_DIR:OpenGLClion>)

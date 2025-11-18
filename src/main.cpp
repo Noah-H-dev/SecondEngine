@@ -88,6 +88,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         Game->update(key,action);
     }
 }
+
 void checkGLError(const char* location) {
     GLenum err;
     while((err = glGetError()) != GL_NO_ERROR) {
