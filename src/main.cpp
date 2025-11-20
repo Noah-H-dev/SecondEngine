@@ -9,10 +9,18 @@
 #include "stb_image.h"
 #include "classes/game.h"
 #include "classes/player.h"
+#include "classes/text.h"
 
 
-#define GLFW_INITIALIZE glfwInit();  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-#define GLFW_WINDOW_INITIALIZE  GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "EngineTwo", nullptr, nullptr); if (window == nullptr){ std::cout << "Failed to create GLFW window" << std::endl; glfwTerminate(); return -1;} glfwMakeContextCurrent(window); glfwSetFramebufferSizeCallback(window, framebuffer_size_callback); if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))){ std::cout << "Failed to initialize GLAD" << std::endl; return -1;}
+#define GLFW_INITIALIZE glfwInit();\
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);\
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);\
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+#define GLFW_WINDOW_INITIALIZE  GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "EngineTwo", nullptr, nullptr);\
+    if (window == nullptr){ std::cout << "Failed to create GLFW window" << std::endl; glfwTerminate(); return -1;}\
+    glfwMakeContextCurrent(window); glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);\
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))){ std::cout << "Failed to initialize GLAD" << std::endl;\
+    return -1;}
 
 
 #ifdef __APPLE__
@@ -43,6 +51,12 @@ int main()
     glfwSetWindowUserPointer(window,&Game);
     player Character(Game.gameSpace,"../src/shaders/static.vs","../src/shaders/static.fs","../src/textures/player.png",10,10);
     Game.Player = &Character;
+    text MyText("../dependencies/fonts/swmono.ttf",
+        screenWidth,
+        screenHeight,
+        "../src/shaders/text.vs",
+        "../src/shaders/text.fs",
+        Game.gameSpace);
 
     // render loop
     // -----------
@@ -51,7 +65,7 @@ int main()
         glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         Game.render();
-
+        MyText.draw("Hello Freetype", 6, 2, 1);
         glfwSwapBuffers(window);
         glfwPollEvents();
 

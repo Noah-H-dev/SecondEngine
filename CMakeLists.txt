@@ -20,7 +20,8 @@ add_executable(OpenGLClion src/main.cpp
         src/classes/renderer.h
         src/classes/enemy.cpp
         src/classes/enemy.h
-        src/classes/attributes.h)
+        src/classes/attributes.h
+        src/classes/text.h)
 
 # Include directories
 target_include_directories(OpenGLClion PRIVATE "${CMAKE_SOURCE_DIR}/dependencies/include")
